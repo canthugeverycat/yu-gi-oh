@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { useEffect, useState } from 'react';
 
 import ImageCardBack from '../assets/cards/templates/card-back.png';
+import BattleField from '../components/Battlefield';
 import Deck from '../components/Deck';
 import Hand from '../components/Hand';
 import { data } from '../data/cards';
@@ -18,6 +19,8 @@ const Game = () => {
   const [oponentHand, setOponentHand] = useState<Hand | null>(null);
   const [oponentDeck, setOponentDeck] = useState<Deck | null>(null);
 
+  const [battlefield, setBattlefield] = useState<BattleField | null>(null);
+
   const preload = function (this: Phaser.Scene) {
     this.load.image('card-back', ImageCardBack);
 
@@ -25,29 +28,29 @@ const Game = () => {
   };
 
   const create = function (this: Phaser.Scene) {
+    const battlefield = new BattleField(this);
+    setBattlefield(battlefield);
+
     const pDeck = new Deck(this, { player: PLAYER.A });
     const pHand = new Hand(this, { player: PLAYER.A });
-    const oDeck = new Deck(this, { player: PLAYER.B });
-    const oHand = new Hand(this, { player: PLAYER.B });
     pDeck.createCards();
-    oDeck.createCards();
+
     setPlayerDeck(pDeck);
     setPlayerHand(pHand);
+
+    const oDeck = new Deck(this, { player: PLAYER.B });
+    const oHand = new Hand(this, { player: PLAYER.B });
+    oDeck.createCards();
+
     setOponentDeck(oDeck);
     setOponentHand(oHand);
+
     this.time.addEvent({
-      delay: 500,
+      delay: 2000,
       callback: () => {
-        pDeck.drawCard(pHand);
+        pDeck.drawCards(pHand, 5);
+        oDeck.drawCards(oHand, 4);
       },
-      repeat: 4,
-    });
-    this.time.addEvent({
-      delay: 600,
-      callback: () => {
-        oDeck.drawCard(oHand);
-      },
-      repeat: 4,
     });
   };
 

@@ -12,8 +12,7 @@ class Deck {
   player;
   cards: Card[] = [];
   position;
-  hoverText: Phaser.GameObjects.Text | null = null;
-  showHoverText = false;
+  countText: Phaser.GameObjects.Text | null = null;
 
   constructor(
     scene: Phaser.Scene,
@@ -46,53 +45,80 @@ class Deck {
       return card;
     });
 
-    this.shuffleDeck();
-
-    this.createHitArea();
-  }
-
-  shuffleDeck() {
-    for (let i = this.cards.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
-    }
-  }
-
-  createHitArea() {
-    const hitArea = this.scene.add
-      .rectangle(0, 0, CARD_WIDTH, CARD_HEIGHT)
-      .setInteractive({ useHandCursor: true, hitArea: true })
-      .setOrigin(0)
-      .setDepth(10)
-      .setAlpha(1);
-    this.container.add(hitArea);
-    this.container.moveTo(hitArea, this.container.length - 1);
-
-    hitArea.on('pointerover', (p: Phaser.Input.Pointer) => {
-      this.hoverText
-        ?.setPosition(p.x, p.y)
-        .setVisible(true)
-        .setText(`${this.cards.length} cards in deck`);
-      this.showHoverText = true;
-    });
-
-    hitArea.on('pointerout', (p: Phaser.Input.Pointer) => {
-      this.hoverText?.setVisible(false);
-      this.showHoverText = false;
-    });
-
-    this.hoverText = this.scene.add
-      .text(0, 0, `Cards in deck`)
-      .setVisible(false)
-      .setDepth(2)
+    this.countText = this.scene.add
+      .text(
+        this.position.x + CARD_WIDTH / 2,
+        this.player === PLAYER.A
+          ? this.position.y + CARD_HEIGHT + 15
+          : this.position.y - 20,
+        `${this.cards.length}`
+      )
+      .setVisible(true)
+      .setDepth(100)
       .setOrigin(0.5);
 
-    this.scene.input.on('pointermove', (p: Phaser.Input.Pointer) => {
-      if (!this.hoverText) return;
+    this.shuffle();
+  }
 
-      if (this.showHoverText) {
-        this.hoverText.setPosition(p.x, p.y - 20);
-      }
+  shuffle() {
+    const shuffled = [...this.cards];
+    const indexes = this.cards.map((_, i) => i).slice(1);
+    const swaps = [];
+
+    for (let i = 1; i < shuffled.length; i++) {
+      const index = indexes[Math.floor(Math.random() * indexes.length)];
+
+      const selectedCard = shuffled.splice(index, 1)[0]; // Remove the selected element
+      shuffled.splice(0, 0, selectedCard); // Insert it at index 0
+
+      // Track the swap details
+      swaps.push({
+        target: selectedCard,
+        from: index,
+      });
+
+      indexes.splice(
+        indexes.findIndex((x) => x === index),
+        1
+      );
+    }
+
+    swaps.forEach((swap, i) => {
+      const pos = { x: -CARD_WIDTH * 1.1, y: 0 };
+
+      this.scene.tweens.add({
+        targets: swap.target.object,
+        y: swap.target.object!.y + pos.y,
+        x: swap.target.object!.x + pos.x,
+        displayHeight: CARD_HEIGHT * 1.1,
+        displayWidth: CARD_WIDTH * 1.1,
+        duration: 150,
+        ease: 'Circ.easeInOut',
+        yoyo: true,
+        delay: i * 150,
+        onYoyo: () => {
+          this.container.remove(swap.target.object!);
+          this.container.add(swap.target.object!);
+        },
+      });
+    });
+
+    this.cards = shuffled;
+
+    this.scene.time.addEvent({
+      delay: this.cards.length * 150,
+      callback: () => {
+        this.cards.forEach((card, i) => {
+          this.container.remove(card.object!);
+
+          const newX = CARD_WIDTH / 2 - i * DECK_STEP;
+          const newY = CARD_HEIGHT / 2 - i * DECK_STEP;
+
+          card.object!.setPosition(newX, newY);
+
+          this.container.add(card.object!);
+        });
+      },
     });
   }
 
@@ -103,7 +129,7 @@ class Deck {
 
     if (!card || !card.object) return;
 
-    this.hoverText!.setText(`${this.cards.length} cards in deck`);
+    this.countText!.setText(`${this.cards.length}`);
 
     const worldMatrix = this.container.getWorldTransformMatrix();
     const globalX = worldMatrix.tx + card.object.x * worldMatrix.scaleX;
@@ -123,6 +149,16 @@ class Deck {
       onComplete: () => {
         this.scene.events.emit('ACTIONS.CARD_DRAW.END', this.player, card);
       },
+    });
+  }
+
+  drawCards(hand: Hand, count?: number) {
+    this.scene.time.addEvent({
+      delay: 500,
+      callback: () => {
+        this.drawCard(hand);
+      },
+      repeat: count ? count - 1 : 0,
     });
   }
 }
