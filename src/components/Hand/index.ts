@@ -35,12 +35,6 @@ class Hand {
     this.position = { x, y };
 
     this.container = this.scene.add.container(this.position.x, this.position.y);
-
-    // const containerDebug = this.scene.add
-    //   .rectangle(0, 0, 50, 50, 0xff0000)
-    //   .setOrigin(0);
-
-    // this.container.add(containerDebug);
   };
 
   addCardToHand = (player: ValuesOf<typeof PLAYER>, card: Card) => {

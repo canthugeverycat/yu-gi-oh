@@ -79,21 +79,26 @@ class Card {
     this.object?.off('pointerout');
   }
 
-  flip(face: ValuesOf<typeof CARD_FACE>) {
+  flip(face: ValuesOf<typeof CARD_FACE>, instant?: boolean) {
+    const setFlip = () => {
+      this.face = face;
+
+      this.object
+        ?.setTexture(
+          face === CARD_FACE.FRONT ? `card-${this.data.id}` : ImageCardBack
+        )
+        .setDisplaySize(CARD_WIDTH, CARD_HEIGHT);
+    };
+
+    if (instant) setFlip();
+
     this.scene.tweens.add({
       targets: this.object,
       displayWidth: 0,
       duration: 150,
       ease: 'Power2',
       onComplete: () => {
-        this.face = face;
-
-        this.object
-          ?.setTexture(
-            face === CARD_FACE.FRONT ? `card-${this.data.id}` : ImageCardBack
-          )
-          .setDisplaySize(CARD_WIDTH, CARD_HEIGHT);
-
+        setFlip();
         this.scene.tweens.add({
           targets: this.object,
           displayWidth: CARD_WIDTH,

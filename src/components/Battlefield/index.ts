@@ -3,7 +3,11 @@ import { CARD_HEIGHT, CARD_WIDTH, PLAYER } from '../../globals/const';
 import { ValuesOf } from '../../globals/types';
 import Card from '../Card';
 
-type ZoneType = { slot: Phaser.GameObjects.Graphics; card: Card | null };
+type ZoneType = {
+  container: Phaser.GameObjects.Container;
+  slot: Phaser.GameObjects.Graphics;
+  card: Card | null;
+};
 
 type FieldType = {
   container: Phaser.GameObjects.Container | null;
@@ -49,23 +53,27 @@ class BattleField {
         CARD_HEIGHT_BF / 2
     );
 
-    for (let x = 0; x < 10; x++) {
+    for (let i = 0; i < 10; i++) {
+      const color = i < 5 ? COLORS.WHITE : COLORS.GREEN;
+      const x =
+        (CARD_WIDTH_BF + CARD_SPACING + CARD_SLOT_PADDING * 2) * (i % 5);
+      const y =
+        i < 5 ? 0 : CARD_HEIGHT_BF + CARD_SPACING + CARD_SLOT_PADDING * 2;
+
+      const container = this.scene.add.container(x, y);
       const slot = this.scene.add.graphics();
+      slot
+        .lineStyle(1, color, 0.3)
+        .strokeRect(
+          0,
+          0,
+          CARD_WIDTH_BF + CARD_SLOT_PADDING * 2,
+          CARD_HEIGHT_BF + CARD_SLOT_PADDING * 2
+        );
+      container.add(slot);
 
-      const color =
-        x < 5
-          ? COLORS.WHITE
-          : COLORS.slot
-              .lineStyle(1, COLORS.WHITE, 1)
-              .strokeRect(
-                (CARD_WIDTH_BF + CARD_SPACING + CARD_SLOT_PADDING * 2) * x,
-                0,
-                CARD_WIDTH_BF + CARD_SLOT_PADDING * 2,
-                CARD_HEIGHT_BF + CARD_SLOT_PADDING * 2
-              );
-
-      this.fields[player].container?.add(slot);
-      this.fields[player].monsters.push({ slot, card: null });
+      this.fields[player].container?.add(container);
+      this.fields[player].monsters.push({ container, slot, card: null });
     }
   }
 }
