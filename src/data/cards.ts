@@ -1,18 +1,19 @@
-import ancientElf from '../assets/cards/monsters/ancient-elf.png';
-import armoredStarfish from '../assets/cards/monsters/armored-starfish.png';
+import ancientElf from '../assets/cards/monsters/ancient-elf.jpg';
+import armoredStarfish from '../assets/cards/monsters/armored-starfish.jpg';
 import baronOfTheFiendSword from '../assets/cards/monsters/baron-of-the-fiend-sword.jpg';
-import basicInsect from '../assets/cards/monsters/basic-insect.png';
-import beaverWarrior from '../assets/cards/monsters/beaver-warrior.png';
-import celticGuardian from '../assets/cards/monsters/celtic-guardian.png';
-import clawReacher from '../assets/cards/monsters/claw-reacher.png';
-import dissolverock from '../assets/cards/monsters/dissolverock.png';
-import dragonZombie from '../assets/cards/monsters/dragon-zombie.png';
+import basicInsect from '../assets/cards/monsters/basic-insect.jpg';
+import beaverWarrior from '../assets/cards/monsters/beaver-warrior.jpg';
+import celticGuardian from '../assets/cards/monsters/celtic-guardian.jpg';
+import clawReacher from '../assets/cards/monsters/claw-reacher.jpg';
+import dissolverock from '../assets/cards/monsters/dissolverock.jpg';
+import dragonZombie from '../assets/cards/monsters/dragon-zombie.jpg';
 import { ValuesOf } from '../globals/types';
-import { CARD_ATTRIBUTE, CARD_TYPE } from './const';
+import { CARD_ATTRIBUTE, CARD_CATEGORY, CARD_TYPE } from './const';
 
 export type CardData = {
-  id: number;
+  id: string;
   name: string;
+  category: ValuesOf<typeof CARD_CATEGORY>;
   image: string;
   attribute: ValuesOf<typeof CARD_ATTRIBUTE>;
   type: ValuesOf<typeof CARD_TYPE>[];
@@ -25,8 +26,9 @@ export type CardData = {
 
 export const data: CardData[] = [
   {
-    id: 93221206,
+    id: 'ancient-elf',
     name: 'Ancient Elf',
+    category: CARD_CATEGORY.MONSTER,
     attribute: CARD_ATTRIBUTE.LIGHT,
     type: [CARD_TYPE.SPELLCASTER, CARD_TYPE.NORMAL],
     level: 4,
@@ -37,8 +39,9 @@ export const data: CardData[] = [
     image: ancientElf,
   },
   {
-    id: 17535588,
+    id: 'armored-starfish',
     name: 'Armored Starfish',
+    category: CARD_CATEGORY.MONSTER,
     attribute: CARD_ATTRIBUTE.WATER,
     type: [CARD_TYPE.AQUA, CARD_TYPE.NORMAL],
     level: 4,
@@ -49,8 +52,9 @@ export const data: CardData[] = [
     image: armoredStarfish,
   },
   {
-    id: 86325596,
+    id: 'baron-of-the-fiend-sword',
     name: 'Baron of the Fiend Sword',
+    category: CARD_CATEGORY.MONSTER,
     attribute: CARD_ATTRIBUTE.DARK,
     type: [CARD_TYPE.FIEND, CARD_TYPE.NORMAL],
     level: 4,
@@ -61,8 +65,9 @@ export const data: CardData[] = [
     image: baronOfTheFiendSword,
   },
   {
-    id: 89091579,
+    id: 'basic-insect',
     name: 'Basic Insect',
+    category: CARD_CATEGORY.MONSTER,
     attribute: CARD_ATTRIBUTE.EARTH,
     type: [CARD_TYPE.INSECT, CARD_TYPE.NORMAL],
     level: 2,
@@ -73,8 +78,9 @@ export const data: CardData[] = [
     image: basicInsect,
   },
   {
-    id: 32452818,
+    id: 'beaver-warrior',
     name: 'Beaver Warrior',
+    category: CARD_CATEGORY.MONSTER,
     attribute: CARD_ATTRIBUTE.EARTH,
     type: [CARD_TYPE.BEAST_WARRIOR, CARD_TYPE.NORMAL],
     level: 4,
@@ -85,8 +91,9 @@ export const data: CardData[] = [
     image: beaverWarrior,
   },
   {
-    id: 91152256,
+    id: 'celtic-guardian',
     name: 'Celtic Guardian',
+    category: CARD_CATEGORY.MONSTER,
     attribute: CARD_ATTRIBUTE.EARTH,
     type: [CARD_TYPE.WARRIOR, CARD_TYPE.NORMAL],
     level: 4,
@@ -97,8 +104,9 @@ export const data: CardData[] = [
     image: celticGuardian,
   },
   {
-    id: 41218256,
+    id: 'claw-reacher',
     name: 'Claw Reacher',
+    category: CARD_CATEGORY.MONSTER,
     attribute: CARD_ATTRIBUTE.DARK,
     type: [CARD_TYPE.FIEND, CARD_TYPE.NORMAL],
     level: 3,
@@ -109,8 +117,9 @@ export const data: CardData[] = [
     image: clawReacher,
   },
   {
-    id: 40826495,
+    id: 'dissolverock',
     name: 'Dissolverock',
+    category: CARD_CATEGORY.MONSTER,
     attribute: CARD_ATTRIBUTE.EARTH,
     type: [CARD_TYPE.ROCK, CARD_TYPE.NORMAL],
     level: 3,
@@ -121,8 +130,9 @@ export const data: CardData[] = [
     image: dissolverock,
   },
   {
-    id: 66672569,
+    id: 'dragon-zombie',
     name: 'Dragon Zombie',
+    category: CARD_CATEGORY.MONSTER,
     attribute: CARD_ATTRIBUTE.DARK,
     type: [CARD_TYPE.ZOMBIE, CARD_TYPE.NORMAL],
     level: 3,

@@ -5,7 +5,7 @@ import ImageCardBack from '../assets/cards/templates/card-back.png';
 import Deck from '../components/Deck';
 import Hand from '../components/Hand';
 import { data } from '../data/cards';
-import COLORS from '../globals/colors';
+import { COLORS } from '../globals/colors';
 import { PLAYER } from '../globals/const';
 import styles from './index.module.scss';
 
@@ -27,18 +27,14 @@ const Game = () => {
   const create = function (this: Phaser.Scene) {
     const pDeck = new Deck(this, { player: PLAYER.A });
     const pHand = new Hand(this, { player: PLAYER.A });
-
     const oDeck = new Deck(this, { player: PLAYER.B });
     const oHand = new Hand(this, { player: PLAYER.B });
-
     pDeck.createCards();
     oDeck.createCards();
-
     setPlayerDeck(pDeck);
     setPlayerHand(pHand);
     setOponentDeck(oDeck);
     setOponentHand(oHand);
-
     this.time.addEvent({
       delay: 500,
       callback: () => {
@@ -46,7 +42,6 @@ const Game = () => {
       },
       repeat: 4,
     });
-
     this.time.addEvent({
       delay: 600,
       callback: () => {

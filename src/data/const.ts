@@ -16,3 +16,9 @@ export const CARD_TYPE = {
   ZOMBIE: 'zombie',
   NORMAL: 'normal',
 } as const;
+
+export const CARD_CATEGORY = {
+  MONSTER: 'monster',
+  SPELL: 'spell',
+  TRAP: 'trap',
+} as const;
