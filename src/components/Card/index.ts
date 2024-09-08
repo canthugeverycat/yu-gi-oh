@@ -5,6 +5,7 @@ import {
   CARD_HEIGHT,
   CARD_LOCATION,
   CARD_WIDTH,
+  PLAYER,
 } from '../../globals/const';
 import { ValuesOf } from '../../globals/types';
 
@@ -14,14 +15,17 @@ class Card {
   scene;
   location = CARD_LOCATION.DECK;
   face = CARD_FACE.BACK;
+  owner;
 
   constructor(
     scene: Phaser.Scene,
     data: CardData,
+    owner: ValuesOf<typeof PLAYER>,
     position: { x: number; y: number }
   ) {
     this.scene = scene;
     this.data = data;
+    this.owner = owner;
 
     this.create(position);
   }
@@ -36,7 +40,7 @@ class Card {
   };
 
   private attachHandEvents = () => {
-    const hoverInY = this.object!.y - 50;
+    const hoverInY = this.object!.y + (this.owner === PLAYER.A ? -1 * 50 : 10);
     const hoverOutY = this.object!.y;
 
     this.object!.on('pointerover', () => {

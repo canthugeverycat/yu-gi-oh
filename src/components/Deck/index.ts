@@ -37,7 +37,7 @@ class Deck {
 
   createCards() {
     this.cards = data.map((d, i) => {
-      const card = new Card(this.scene, d, {
+      const card = new Card(this.scene, d, this.player, {
         x: CARD_WIDTH / 2 - i * DECK_STEP,
         y: CARD_HEIGHT / 2 - i * DECK_STEP,
       });
@@ -102,6 +102,8 @@ class Deck {
     const card = this.cards.pop();
 
     if (!card || !card.object) return;
+
+    this.hoverText!.setText(`${this.cards.length} cards in deck`);
 
     const worldMatrix = this.container.getWorldTransformMatrix();
     const globalX = worldMatrix.tx + card.object.x * worldMatrix.scaleX;
