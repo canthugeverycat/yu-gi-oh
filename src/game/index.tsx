@@ -26,22 +26,32 @@ const Game = () => {
 
   const create = function (this: Phaser.Scene) {
     const pDeck = new Deck(this, { player: PLAYER.A });
+    const pHand = new Hand(this, { player: PLAYER.A });
+
     const oDeck = new Deck(this, { player: PLAYER.B });
+    const oHand = new Hand(this, { player: PLAYER.B });
 
     pDeck.createCards();
     oDeck.createCards();
 
-    const pHand = new Hand(this, { player: PLAYER.A });
-    const oHand = new Hand(this, { player: PLAYER.B });
-
     setPlayerDeck(pDeck);
-    setOponentDeck(oDeck);
     setPlayerHand(pHand);
+    setOponentDeck(oDeck);
     setOponentHand(oHand);
 
     this.time.addEvent({
-      delay: 1000,
-      callback: () => pDeck.drawCard(pHand!),
+      delay: 500,
+      callback: () => {
+        pDeck.drawCard(pHand);
+      },
+      repeat: 4,
+    });
+
+    this.time.addEvent({
+      delay: 600,
+      callback: () => {
+        oDeck.drawCard(oHand);
+      },
       repeat: 4,
     });
   };

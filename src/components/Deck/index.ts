@@ -1,6 +1,6 @@
 import { data } from '../../data/cards';
 import { CARD_HEIGHT, CARD_WIDTH, PLAYER } from '../../globals/const';
-import { PlayerType } from '../../globals/types';
+import { ValuesOf } from '../../globals/types';
 import Card from '../Card';
 import Hand from '../Hand';
 
@@ -15,7 +15,10 @@ class Deck {
   hoverText: Phaser.GameObjects.Text | null = null;
   showHoverText = false;
 
-  constructor(scene: Phaser.Scene, { player }: { player: PlayerType }) {
+  constructor(
+    scene: Phaser.Scene,
+    { player }: { player: ValuesOf<typeof PLAYER> }
+  ) {
     this.scene = scene;
     this.player = player;
     this.position =
@@ -43,7 +46,16 @@ class Deck {
       return card;
     });
 
+    this.shuffleDeck();
+
     this.createHitArea();
+  }
+
+  shuffleDeck() {
+    for (let i = this.cards.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
+    }
   }
 
   createHitArea() {
@@ -103,11 +115,11 @@ class Deck {
     this.scene.tweens.add({
       targets: card.object,
       x: handX,
-      y: window.innerHeight,
+      y: this.player === PLAYER.A ? window.innerHeight : 0,
       duration: 300,
       ease: 'Power2',
       onComplete: () => {
-        this.scene.events.emit('ACTIONS.CARD_DRAW.END', card);
+        this.scene.events.emit('ACTIONS.CARD_DRAW.END', this.player, card);
       },
     });
   }

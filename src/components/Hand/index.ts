@@ -1,5 +1,10 @@
-import { CARD_FACE, CARD_LOCATION, CARD_WIDTH } from '../../globals/const';
-import { PlayerType } from '../../globals/types';
+import {
+  CARD_FACE,
+  CARD_LOCATION,
+  CARD_WIDTH,
+  PLAYER,
+} from '../../globals/const';
+import { ValuesOf } from '../../globals/types';
 import Card from '../Card';
 
 const CARD_LIMIT = 6;
@@ -10,8 +15,12 @@ class Hand {
   player;
   cards: Card[] = [];
   container: Phaser.GameObjects.Container | null = null;
+  position: { x: number; y: number } = { x: 0, y: 0 };
 
-  constructor(scene: Phaser.Scene, { player }: { player: PlayerType }) {
+  constructor(
+    scene: Phaser.Scene,
+    { player }: { player: ValuesOf<typeof PLAYER> }
+  ) {
     this.scene = scene;
     this.player = player;
 
@@ -22,25 +31,29 @@ class Hand {
 
   createHandContainer = () => {
     const x = window.innerWidth / 2;
-    const y = window.innerHeight;
+    const y = this.player === PLAYER.A ? window.innerHeight : 0;
+    this.position = { x, y };
 
-    this.container = this.scene.add.container(x, y);
+    this.container = this.scene.add.container(this.position.x, this.position.y);
 
-    const containerDebug = this.scene.add
-      .rectangle(0, 0, 50, 50, 0xff0000)
-      .setOrigin(0);
+    // const containerDebug = this.scene.add
+    //   .rectangle(0, 0, 50, 50, 0xff0000)
+    //   .setOrigin(0);
 
-    this.container.add(containerDebug);
+    // this.container.add(containerDebug);
   };
 
-  addCardToHand = (card: Card) => {
+  addCardToHand = (player: ValuesOf<typeof PLAYER>, card: Card) => {
+    if (player !== this.player) return;
+
     const localX = this.getNextCardPositionX();
     card.object!.setPosition(localX, 0);
 
     this.cards.push(card);
     this.container?.add(card.object!);
     card.changeLocation(CARD_LOCATION.HAND);
-    card.flip(CARD_FACE.FRONT);
+
+    if (player === PLAYER.A) card.flip(CARD_FACE.FRONT);
 
     this.recenterHand();
   };
@@ -53,6 +66,7 @@ class Hand {
     if (useGlobal) {
       const worldMatrix = this.container!.getWorldTransformMatrix();
       const globalX = worldMatrix.tx + centeredX * worldMatrix.scaleX;
+
       return globalX;
     }
 
