@@ -1,5 +1,6 @@
 import {
   CARD_FACE,
+  CARD_HEIGHT,
   CARD_LOCATION,
   CARD_WIDTH,
   PLAYER,
@@ -50,6 +51,19 @@ class Hand {
     if (player === PLAYER.A) card.flip(CARD_FACE.FRONT);
 
     this.recenterHand();
+
+    card.object!.on('pointerdown', () => {
+      const i = this.cards.findIndex((c) => c === card);
+      this.cards.splice(i, 1);
+      this.container?.remove(card.object!);
+
+      card.object!.off('pointerdown');
+      card.object!.off('pointerover');
+      card.object!.off('pointerout');
+      card.object!.setDisplaySize(CARD_WIDTH, CARD_HEIGHT);
+
+      this.scene.events.emit('ACTIONS.CARD_PLACE', this.player, card);
+    });
   };
 
   getNextCardPositionX = (useGlobal?: boolean) => {

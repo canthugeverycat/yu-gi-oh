@@ -2,9 +2,11 @@ import Phaser from 'phaser';
 import { useEffect, useState } from 'react';
 
 import ImageCardBack from '../assets/cards/templates/card-back.png';
+import ImageCursor from '../assets/cursor.png';
 import BattleField from '../components/Battlefield';
 import Deck from '../components/Deck';
 import Hand from '../components/Hand';
+import Cursor from '../components/Cursor';
 import { data } from '../data/cards';
 import { COLORS } from '../globals/colors';
 import { PLAYER } from '../globals/const';
@@ -22,6 +24,8 @@ const Game = () => {
   const [battlefield, setBattlefield] = useState<BattleField | null>(null);
 
   const preload = function (this: Phaser.Scene) {
+
+    this.load.image('cursor', ImageCursor);
     this.load.image('card-back', ImageCardBack);
 
     data.forEach((d) => this.load.image(`card-${d.id}`, d.image));
@@ -52,6 +56,8 @@ const Game = () => {
         oDeck.drawCards(oHand, 4);
       },
     });
+
+    const cursor = new Cursor(this);
   };
 
   const update = function (this: Phaser.Scene) {

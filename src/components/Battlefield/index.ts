@@ -40,6 +40,8 @@ class BattleField {
     this.scene = scene;
 
     this.createField(PLAYER.A);
+
+    this.scene.events.on('ACTIONS.CARD_PLACE', this.placeCard, this);
   }
 
   createField(player: ValuesOf<typeof PLAYER>) {
@@ -75,6 +77,30 @@ class BattleField {
       this.fields[player].container?.add(container);
       this.fields[player].monsters.push({ container, slot, card: null });
     }
+  }
+
+  placeCard(player: ValuesOf<typeof PLAYER>, card: Card) {
+    const index = this.getFirstAvailableSlot(player, 'monsters');
+
+    if (index === -1) return;
+
+    this.fields[player].monsters[index].card = card;
+    this.fields[player].monsters[index].container.add(card.object!);
+    card.object
+      ?.setPosition(CARD_SLOT_PADDING, CARD_SLOT_PADDING)
+      .setDisplaySize(CARD_WIDTH_BF, CARD_HEIGHT_BF)
+      .setOrigin(0);
+  }
+
+  getFirstAvailableSlot(
+    player: ValuesOf<typeof PLAYER>,
+    type: 'monsters' | 'spelltrap'
+  ) {
+    const index = this.fields[player][type].findIndex(
+      (item) => item.card === null
+    );
+
+    return index;
   }
 }
 
