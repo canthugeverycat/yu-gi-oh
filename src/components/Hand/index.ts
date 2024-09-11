@@ -52,7 +52,9 @@ class Hand {
 
     this.recenterHand();
 
-    card.object!.on('pointerdown', () => {
+    card.object!.on('pointerdown', (p: Phaser.Input.Pointer) => {
+      if (p.rightButtonDown()) return;
+
       const i = this.cards.findIndex((c) => c === card);
       this.cards.splice(i, 1);
       this.container?.remove(card.object!);

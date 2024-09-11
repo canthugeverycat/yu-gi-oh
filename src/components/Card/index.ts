@@ -8,6 +8,8 @@ import {
   PLAYER,
 } from '../../globals/const';
 import { ValuesOf } from '../../globals/types';
+import EventsCenter from '../../utils/EventsCenter';
+import { MOUSE_EVENTS, MOUSE_STATE } from '../Cursor/events';
 
 class Card {
   data;
@@ -34,7 +36,7 @@ class Card {
     const card = this.scene.add
       .image(x, y, 'card-back')
       .setDisplaySize(CARD_WIDTH, CARD_HEIGHT)
-      .setInteractive({ useHandCursor: true });
+      .setInteractive();
 
     this.object = card;
   };
@@ -52,6 +54,8 @@ class Card {
         duration: 300,
         ease: 'Power2',
       });
+
+      EventsCenter.emit(MOUSE_EVENTS.CHANGE_STATE, MOUSE_STATE.SUMMON);
     });
 
     this.object!.on('pointerout', () => {
@@ -63,6 +67,18 @@ class Card {
         duration: 300,
         ease: 'Power2',
       });
+
+      EventsCenter.emit(MOUSE_EVENTS.CHANGE_STATE, MOUSE_STATE.DEFAULT);
+    });
+
+    this.object!.on('pointerdown', (p: Phaser.Input.Pointer) => {
+      if (p.rightButtonDown()) {
+        EventsCenter.emit(MOUSE_EVENTS.CHANGE_STATE, MOUSE_STATE.SET);
+      } else {
+        const tweens = this.scene.tweens.getTweensOf(this.object!);
+        tweens.forEach((tween) => tween.stop());
+        EventsCenter.emit(MOUSE_EVENTS.CHANGE_STATE);
+      }
     });
   };
 
