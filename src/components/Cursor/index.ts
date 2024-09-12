@@ -31,9 +31,9 @@ class Cursor {
 
     this.container = this.scene.add.container(-100, -100);
 
-    this.createCursors();
-
     this.createParticles();
+
+    this.createCursors();
 
     this.createListeners();
 
@@ -95,8 +95,8 @@ class Cursor {
 
   createParticles() {
     this.particles = this.scene.add.particles(0, 0, 'particle-gold', {
-      x: 0,
-      y: 0,
+      x: 20,
+      y: -5,
       speed: { min: 100, max: 100 },
       lifespan: 500,
       scale: { start: 0.1, end: 0 },
@@ -104,7 +104,7 @@ class Cursor {
       angle: { min: 0, max: 360 },
       blendMode: 'SOFT_LIGHT',
       quantity: 3,
-      alpha: 0.5,
+      alpha: 1,
     });
 
     this.container.add(this.particles);

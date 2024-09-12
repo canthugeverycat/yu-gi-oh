@@ -106,7 +106,7 @@ class Deck {
     this.cards = shuffled;
 
     this.scene.time.addEvent({
-      delay: this.cards.length * 150,
+      delay: this.cards.length * 150 + 50,
       callback: () => {
         this.cards.forEach((card, i) => {
           this.container.remove(card.object!);
